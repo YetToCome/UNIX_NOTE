@@ -1,0 +1,22 @@
+##值-结果参数
+
+> 当往一个套接字函数传递一个套接字地址结构的时候，该结构总是以引用形式来传递。该结构的长度也作为一个参数来传递，不过其传递方式取决于该结构的传递方向，从进程到内核，还是从内核到进程。
+
+> 从进程到内核传递套接字地址结构的函数有3个：bind, connect和sentto。这些函数的一个参数是指向某个套接字结构的指针，另一个
+> 参数是该结构的整数大小，例如
+
+
+	struct sockaddr_in serv;
+	connect(sockfd, (SA *) &serv, sizeof(serv));
+	
+
+> 既然指针和指针所指内容的大小都传递给了内核，于是内核知道到底需要从进程渎职多少数据进来。
+> 套接字地址结构的大小的数据类型实际上是socklen_t,而不是int
+
+	struct sockaddr_un cli;
+	sock_len len;
+	len = sizeof(cli);
+	getpeername(unixfd, (SA *) &cli, &len);
+
+* 从内核到进程传递套接字地址结构的函数有4个：accept, recvfrom, getsockname和getpeername。
+* 这4个函数的其中两个参数是指向某个套接字地址的指针和指向表示该结构的大小的整数变量的指针。
